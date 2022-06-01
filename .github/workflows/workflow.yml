@@ -5,36 +5,35 @@ stages:
   - build
 
 before_script:
-  - npm install
+- npm install
 
-test:
-  stage: test
-  tags:
-    - linux
-  cache:
-    paths:
-      - node_modules/
-  script:
-    - CI=true npm test
+on:
+  push:
+    branches:
+      - "master"
 
-build:
-  stage: build
-  only:
-  - master
-  tags:
-    - linux
-  cache:
-    paths:
-      - node_modules/
-  artifacts:
-    paths:
-    - build
-    expire_in: 1 week
-  steps:
-    - uses: jakejarvis/s3-sync-action@master
-      with:
-        args: --acl public-read --follow-symlinks --delete
-      env:
-        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+jobs:
+  runs-on: ubuntu-latest
+  test:
+    stage: test
+    tags:
+      - linux
+    cache:
+      paths:
+        - node_modules/
+    script:
+      - CI=true npm test
+
+  # build:
+  #   steps:
+  #     - uses: actions/checkout@v1
+  #     - run: sudo npm install -g yarn
+  #     - run: yarn
+  #     - run: yarn run build
+  #     - uses: jakejarvis/s3-sync-action@master
+  #       with:
+  #         args: --acl public-read --follow-symlinks --delete
+  #       env:
+  #         AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+  #         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
