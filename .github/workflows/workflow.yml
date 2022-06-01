@@ -1,6 +1,6 @@
 image: node:16.13.2
 
-stages:
+jobs:
   - test
   - build
 
@@ -13,7 +13,6 @@ on:
       - "master"
 
 jobs:
-  runs-on: ubuntu-latest
   test:
     stage: test
     tags:
